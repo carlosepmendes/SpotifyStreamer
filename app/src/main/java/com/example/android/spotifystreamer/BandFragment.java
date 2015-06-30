@@ -3,11 +3,17 @@ package com.example.android.spotifystreamer;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,15 +40,41 @@ public class BandFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        BandAsyncTask fetch = new BandAsyncTask();
-        fetch.execute("Muse");
+
+
 
         View rootView = inflater.inflate(R.layout.fragment_band, container, false);
+
+
+        EditText searchArtists = (EditText) rootView.findViewById(R.id.band_editText);
+
+        searchArtists.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            //This method is called to notify that, within s, the count characters beginning at start have just replaced old text that had length before
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length()!= 0) {
+                    // Create an instance of the async task and execute it
+                    BandAsyncTask fetch = new BandAsyncTask();
+                    fetch.execute(s.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         arrayOfBands = new ArrayList<Band>();
 
         bandAdapter = new BandAdapter(getActivity(),arrayOfBands);
 
+        //Get the listview and set the adapter on it
         ListView listView = (ListView) rootView.findViewById(R.id.band_listView);
         listView.setAdapter(bandAdapter);
 
@@ -85,7 +117,8 @@ public class BandFragment extends Fragment {
 
         }
 
-        // This runs in UI when background thread finishes
+        // This runs in UI when background thread finishes.
+        // Do things like hide the progress bar or change a TextView
         @Override
         protected void onPostExecute(List artistResult) {
             super.onPostExecute(artistResult);
@@ -101,8 +134,6 @@ public class BandFragment extends Fragment {
                     bandAdapter.add(new Band(ar.id, ar.name, ar.images.iterator().next().url));
                 }
             }
-
-            // Do things like hide the progress bar or change a TextView
         }
 
     }
