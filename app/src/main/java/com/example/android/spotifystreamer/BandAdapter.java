@@ -1,5 +1,6 @@
 package com.example.android.spotifystreamer;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public class BandAdapter extends ArrayAdapter<Band>{
 
-        public BandAdapter(Context context, List<Band> bandList) {
+        public BandAdapter(Activity context, List<Band> bandList) {
             super(context, 0, bandList);
         }
 
