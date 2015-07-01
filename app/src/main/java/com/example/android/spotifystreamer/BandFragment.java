@@ -1,5 +1,6 @@
 package com.example.android.spotifystreamer;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -57,7 +59,7 @@ public class BandFragment extends Fragment {
             //This method is called to notify that, within s, the count characters beginning at start have just replaced old text that had length before
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length()!= 0) {
+                if (s.length() != 0) {
                     // Create an instance of the async task and execute it
                     BandAsyncTask fetch = new BandAsyncTask();
                     fetch.execute(s.toString());
@@ -77,6 +79,19 @@ public class BandFragment extends Fragment {
         //Get the listview and set the adapter on it
         ListView listView = (ListView) rootView.findViewById(R.id.band_listView);
         listView.setAdapter(bandAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Band band = bandAdapter.getItem(position);
+                Intent intent = new Intent(getActivity(), SongActivity.class)
+                        .putExtra(Intent.EXTRA_TEXT, band.id);
+                startActivity(intent);
+
+            }
+
+        });
 
         return rootView;
 
