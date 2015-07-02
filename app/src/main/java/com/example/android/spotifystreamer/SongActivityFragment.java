@@ -1,5 +1,6 @@
 package com.example.android.spotifystreamer;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -42,6 +44,13 @@ public class SongActivityFragment extends Fragment {
         String idBand = null;
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
             idBand = intent.getStringExtra(Intent.EXTRA_TEXT);
+        }else{
+            Context context = getActivity();
+            CharSequence text = "Sorry, we have no tracks for this artist!";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
         }
 
         View rootView = inflater.inflate(R.layout.fragment_song, container, false);
@@ -54,7 +63,7 @@ public class SongActivityFragment extends Fragment {
 
         songAdapter = new SongAdapter(getActivity(), arrayOfSongs);
 
-        //Get the listview and set the adapter on it
+        //Get the listView and set the adapter on it
         ListView listView = (ListView) rootView.findViewById(R.id.song_listView);
         listView.setAdapter(songAdapter);
 
@@ -81,7 +90,7 @@ public class SongActivityFragment extends Fragment {
 
             }catch(Exception e){
                 Log.e(LOG_TAG, "Error ", e);
-                // If the code didn't successfully get the bands data, there's no point in moving on
+                // If the code didn't successfully get data, there's no point in moving on
                 return null;
             }
 
@@ -93,19 +102,45 @@ public class SongActivityFragment extends Fragment {
         protected void onPostExecute(List artistResult) {
             super.onPostExecute(artistResult);
 
-            songAdapter.clear();
+            if (!artistResult.isEmpty()){
+                songAdapter.clear();
 
-            for (int i = 0; i <artistResult.size() ; i++) {
+                for (int i = 0; i <artistResult.size() ; i++) {
+                    Track ar = (Track)artistResult.get(i);
+                    if (ar.album.images.isEmpty()){
+                        songAdapter.add(new Song(ar.album.name, ar.name, "http://png-4.findicons.com/files/icons/1676/primo/128/music.png"));
+                    }else {
 
-                Track ar = (Track)artistResult.get(i);
-                if (ar.album.images.isEmpty()){
-                    songAdapter.add(new Song(ar.album.name, ar.name, "http://png-4.findicons.com/files/icons/1676/primo/128/music.png"));
-                }else {
-                    songAdapter.add(new Song(ar.album.name, ar.name, ar.album.images.iterator().next().url));
+/*                        String urlLarge = "http://png-4.findicons.com/files/icons/1676/primo/128/music.png";
+                        String urlSmall = null;
+                        Iterator<Image> iterator = track.album.images.iterator();
+                        while (iterator.hasNext()){
+                            Image img = iterator.next();
+
+                            if (img.width >= 640){
+                                urlLarge = img.url;
+                            }
+
+                            if (img.width >= 200){
+                                urlSmall = img.url;
+                            }else if (urlSmall.isEmpty() ){
+                                urlSmall = img.url;
+                            }
+                        }*/
+
+                        songAdapter.add(new Song(ar.album.name, ar.name, ar.album.images.iterator().next().url));
+                    }
                 }
             }
+
         }
 
     }
 
 }
+
+//TODO: acrescentar padding ou margin nas views
+//TODO: kill toast ao encontrar artista
+//TODO: ifs das imagens
+//TODO:
+//TODO: menu settings muda o pais

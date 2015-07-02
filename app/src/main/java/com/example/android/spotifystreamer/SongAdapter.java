@@ -30,11 +30,13 @@ public class SongAdapter extends ArrayAdapter<Song> {
         }
         // Lookup view for data population
         TextView songName = (TextView) convertView.findViewById(R.id.song_textView);
+        TextView albumName = (TextView) convertView.findViewById(R.id.album_textView);
         ImageView songPhoto = (ImageView) convertView.findViewById(R.id.song_imageView);
 
 
-        // Populate the data into the template view using the data object
+        // Populate the data into the template views using the data object
         songName.setText(song.name);
+        albumName.setText(song.albumName);
         //Populate the imageView
         Picasso.with(getContext()).load(song.photoSmall).into(songPhoto);
 

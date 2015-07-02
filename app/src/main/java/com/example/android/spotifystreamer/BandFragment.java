@@ -1,5 +1,6 @@
 package com.example.android.spotifystreamer;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,14 +142,27 @@ public class BandFragment extends Fragment {
 
             bandAdapter.clear();
 
-            for (int i = 0; i <artistResult.size() ; i++) {
+            if (!artistResult.isEmpty()) {
 
-                Artist ar = (Artist)artistResult.get(i);
-                if (ar.images.isEmpty()){
-                    bandAdapter.add(new Band(ar.id, ar.name, "http://png-4.findicons.com/files/icons/1676/primo/128/music.png"));
-                }else {
-                    bandAdapter.add(new Band(ar.id, ar.name, ar.images.iterator().next().url));
+
+                for (int i = 0; i < artistResult.size(); i++) {
+
+                    Artist ar = (Artist) artistResult.get(i);
+                    if (ar.images.isEmpty()) {
+                        bandAdapter.add(new Band(ar.id, ar.name, "http://png-4.findicons.com/files/icons/1676/primo/128/music.png"));
+                    } else {
+                        bandAdapter.add(new Band(ar.id, ar.name, ar.images.iterator().next().url));
+                    }
                 }
+
+            }else {
+
+                Context context = getActivity();
+                CharSequence text = "Sorry, artist not found!";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
             }
         }
 
