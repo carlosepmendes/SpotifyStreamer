@@ -20,12 +20,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
+import kaaes.spotify.webapi.android.models.Image;
 
 
 /**
@@ -52,6 +54,24 @@ public class BandFragment extends Fragment {
 
         EditText searchArtists = (EditText) rootView.findViewById(R.id.band_editText);
 
+        // this block listens for the action send and then queries the api
+        searchArtists.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    if(v.getText().length() != 0) {
+                        BandAsyncTask fetch = new BandAsyncTask();
+                        fetch.execute(v.getText().toString());
+                    }
+                    handled = true;
+                }
+                return handled;
+            }
+        });
+
+        /* THIS BLOCK OF CODE QUERY THE API LETTER BY LETTER
+
         searchArtists.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -72,7 +92,7 @@ public class BandFragment extends Fragment {
             public void afterTextChanged(Editable s) {
 
             }
-        });
+        });*/
 
         arrayOfBands = new ArrayList<Band>();
 
@@ -145,14 +165,22 @@ public class BandFragment extends Fragment {
             if (!artistResult.isEmpty()) {
 
 
-                for (int i = 0; i < artistResult.size(); i++) {
 
-                    Artist ar = (Artist) artistResult.get(i);
-                    if (ar.images.isEmpty()) {
-                        bandAdapter.add(new Band(ar.id, ar.name, "http://png-4.findicons.com/files/icons/1676/primo/128/music.png"));
-                    } else {
-                        bandAdapter.add(new Band(ar.id, ar.name, ar.images.iterator().next().url));
+                for (int i = 0; i < artistResult.size(); i++) {
+                    Artist artist = (Artist) artistResult.get(i);//new Artist();
+
+                    String imgSmall = "http://png-4.findicons.com/files/icons/1676/primo/128/music.png";
+                    Iterator<Image> iterator = artist.images.iterator();
+                    while (iterator.hasNext()) {
+                        Image img = iterator.next();
+
+                        if (img.width <= 200) {
+                            imgSmall = img.url;
+                        } else if (imgSmall.isEmpty()) {
+                            imgSmall = img.url;
+                        }
                     }
+                    bandAdapter.add(new Band(artist.id, artist.name, imgSmall));
                 }
 
             }else {

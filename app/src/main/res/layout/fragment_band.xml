@@ -14,6 +14,9 @@
         android:id="@+id/band_editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/search_hint"
+        android:imeOptions="actionSend"
+        android:inputType="text"
         />
 
     <ListView

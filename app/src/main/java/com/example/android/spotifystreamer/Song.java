@@ -21,9 +21,4 @@ public class Song {
         this.previewUrl = previewUrl;
     }
 
-    public Song(String albumName, String name, String photoSmall){
-        this.albumName = albumName;
-        this.name = name;
-        this.photoSmall = photoSmall;
-    }
 }
