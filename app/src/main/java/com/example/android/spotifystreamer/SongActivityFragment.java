@@ -61,7 +61,7 @@ public class SongActivityFragment extends Fragment {
         SongAsyncTask fetch = new SongAsyncTask();
         fetch.execute(idBand);
 
-        arrayOfSongs = new ArrayList<Song>();
+        arrayOfSongs = new ArrayList<>();
 
         songAdapter = new SongAdapter(getActivity(), arrayOfSongs);
 
@@ -83,7 +83,7 @@ public class SongActivityFragment extends Fragment {
             try {
                 SpotifyApi api = new SpotifyApi();
                 SpotifyService spotify = api.getService();
-                Map<String, Object> options = new Hashtable<String, Object>();
+                Map<String, Object> options = new Hashtable<>();
                 options.put("country", "PT");
                 Tracks results = spotify.getArtistTopTrack(params[0], options);
 
@@ -116,10 +116,7 @@ public class SongActivityFragment extends Fragment {
 
                         String imageLarge = "http://png-4.findicons.com/files/icons/1676/primo/128/music.png";
                         String imageSmall = "http://png-4.findicons.com/files/icons/1676/primo/128/music.png";
-                        Iterator<Image> iterator = track.album.images.iterator();
-                        while (iterator.hasNext()) {
-                            Image img = iterator.next();
-
+                        for (Image img : track.album.images) {
                             if (img.width >= 640) {
                                 imageLarge = img.url;
                             }
@@ -138,9 +135,3 @@ public class SongActivityFragment extends Fragment {
         }
     }
 }
-
-//TODO: acrescentar padding ou margin nas views
-//TODO: kill toast ao encontrar artista
-//TODO: ifs das imagens
-//TODO:
-//TODO: menu settings muda o pais

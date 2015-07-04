@@ -41,12 +41,9 @@ public class BandFragment extends Fragment {
     public BandFragment() {
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
 
 
         View rootView = inflater.inflate(R.layout.fragment_band, container, false);
@@ -62,7 +59,8 @@ public class BandFragment extends Fragment {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
                     if(v.getText().length() != 0) {
                         BandAsyncTask fetch = new BandAsyncTask();
-                        fetch.execute(v.getText().toString());
+                        String query= v.getText().toString();
+                        fetch.execute(query);
                     }
                     handled = true;
                 }
@@ -70,7 +68,7 @@ public class BandFragment extends Fragment {
             }
         });
 
-        /* THIS BLOCK OF CODE QUERY THE API LETTER BY LETTER
+        /* THIS BLOCK OF CODE QUERY THE API LETTER BY LETTER (opted with the one above)
 
         searchArtists.addTextChangedListener(new TextWatcher() {
             @Override
@@ -94,7 +92,8 @@ public class BandFragment extends Fragment {
             }
         });*/
 
-        arrayOfBands = new ArrayList<Band>();
+
+        arrayOfBands = new ArrayList<>();
 
         bandAdapter = new BandAdapter(getActivity(),arrayOfBands);
 
@@ -170,10 +169,7 @@ public class BandFragment extends Fragment {
                     Artist artist = (Artist) artistResult.get(i);//new Artist();
 
                     String imgSmall = "http://png-4.findicons.com/files/icons/1676/primo/128/music.png";
-                    Iterator<Image> iterator = artist.images.iterator();
-                    while (iterator.hasNext()) {
-                        Image img = iterator.next();
-
+                    for (Image img : artist.images) {
                         if (img.width <= 200) {
                             imgSmall = img.url;
                         } else if (imgSmall.isEmpty()) {
