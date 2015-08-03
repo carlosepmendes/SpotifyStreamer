@@ -27,6 +27,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.android.spotifystreamer.MainActivity" />
         </activity>
+        <activity
+            android:name=".PlayerActivity"
+            android:label="@string/title_activity_player"
+            android:parentActivityName=".SongActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.spotifystreamer.SongActivity" />
+        </activity>
     </application>
 
 </manifest>
