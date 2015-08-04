@@ -53,7 +53,7 @@ public class Song implements Parcelable{
         parcel.writeString(previewUrl);
     }
 
-    public final Parcelable.Creator<Song> CREATOR = new Creator<Song>() {
+    public static final Parcelable.Creator<Song> CREATOR = new Parcelable.Creator<Song>() {
         @Override
         public Song createFromParcel(Parcel source) {
             return new  Song(source);

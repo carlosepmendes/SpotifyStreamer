@@ -3,10 +3,8 @@ package com.example.android.spotifystreamer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -20,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
@@ -45,9 +42,7 @@ public class BandFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
         View rootView = inflater.inflate(R.layout.fragment_band, container, false);
-
 
         EditText searchArtists = (EditText) rootView.findViewById(R.id.band_editText);
 
@@ -127,8 +122,6 @@ public class BandFragment extends Fragment {
      *
      *  Any of them can be String, Integer, Void, etc.
      *  */
-
-
     public class BandAsyncTask extends AsyncTask<String, Void, List> {
 
         private final String LOG_TAG = BandAsyncTask.class.getSimpleName();
