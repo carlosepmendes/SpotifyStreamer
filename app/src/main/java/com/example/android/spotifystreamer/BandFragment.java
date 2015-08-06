@@ -33,7 +33,8 @@ import kaaes.spotify.webapi.android.models.Image;
 public class BandFragment extends Fragment {
 
     public BandAdapter bandAdapter;
-    public List<Band> arrayOfBands;
+    public ArrayList<Band> arrayOfBands;
+    public ListView listView;
 
     public BandFragment() {
     }
@@ -93,7 +94,7 @@ public class BandFragment extends Fragment {
         bandAdapter = new BandAdapter(getActivity(),arrayOfBands);
 
         //Get the listview and set the adapter on it
-        ListView listView = (ListView) rootView.findViewById(R.id.band_listView);
+        listView = (ListView) rootView.findViewById(R.id.band_listView);
         listView.setAdapter(bandAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -110,6 +111,29 @@ public class BandFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // get saved datasource if present
+        if (savedInstanceState != null) {
+            arrayOfBands = savedInstanceState.getParcelableArrayList("savedBandsList");
+            bandAdapter = new BandAdapter(getActivity(),arrayOfBands);
+            listView.setAdapter(bandAdapter);
+        }
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // save data source
+        if (arrayOfBands != null) {
+            outState.putParcelableArrayList("savedBandsList", arrayOfBands);
+        }
 
     }
 
