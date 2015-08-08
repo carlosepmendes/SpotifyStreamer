@@ -8,9 +8,26 @@ import android.os.Parcelable;
  * This class will model our query results
  */
 public class Band implements Parcelable{
-    public String id;
-    public String name;
-    public String photo;
+    /**
+        This field is needed for Android to be able to create new objects, individually or as arrays.
+        @param dest  The Parcel in which the object should be written.
+        @param flags Additional flags about how the object should be written.
+                   May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
+    **/
+    public static final Parcelable.Creator<Band> CREATOR = new Parcelable.Creator<Band>() {
+        @Override
+        public Band createFromParcel(Parcel source) {
+            return new Band(source);
+        }
+
+        @Override
+        public Band[] newArray(int size) {
+            return new Band[size];
+        }
+    };
+    private String id;
+    private String name;
+    private String photo;
 
     //Standard constructor for non-parcel
     public Band(String id, String name, String photo) {
@@ -25,6 +42,30 @@ public class Band implements Parcelable{
     **/
     private Band (Parcel in){
         ReadFromParcel(in);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     private void ReadFromParcel(Parcel in) {
@@ -63,22 +104,4 @@ public class Band implements Parcelable{
         parcel.writeString(name);
         parcel.writeString(photo);
     }
-
-    /**
-        This field is needed for Android to be able to create new objects, individually or as arrays.
-        @param dest  The Parcel in which the object should be written.
-        @param flags Additional flags about how the object should be written.
-                   May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
-    **/
-    public static final Parcelable.Creator<Band> CREATOR = new Parcelable.Creator<Band>() {
-        @Override
-        public Band createFromParcel(Parcel source) {
-            return new Band(source);
-        }
-
-        @Override
-        public Band[] newArray(int size) {
-            return new Band[size];
-        }
-    };
 }

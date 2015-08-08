@@ -37,10 +37,10 @@ public class BandAdapter extends ArrayAdapter<Band>{
             ImageView artistPhoto = (ImageView) convertView.findViewById(R.id.band_imageView);
 
             // Populate the data into the template view using the data object
-            artistName.setText(band.name);
+            artistName.setText(band.getName());
 
             //Populate the imageView
-            Picasso.with(getContext()).load(band.photo).into(artistPhoto);
+            Picasso.with(getContext()).load(band.getPhoto()).into(artistPhoto);
 
             // Return the completed view to render on screen
             return convertView;

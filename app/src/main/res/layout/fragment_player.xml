@@ -11,21 +11,25 @@
     tools:context="com.example.android.spotifystreamer.PlayerActivityFragment">
 
     <TextView
+        android:id="@+id/bandText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="teste" />
 
     <TextView
+        android:id="@+id/albumText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="teste" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/songImage"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
         android:text="teste" />
 
     <TextView
+        android:id="@+id/songText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="teste" />

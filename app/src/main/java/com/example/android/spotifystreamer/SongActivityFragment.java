@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -29,9 +30,9 @@ import kaaes.spotify.webapi.android.models.Tracks;
  */
 public class SongActivityFragment extends Fragment {
 
-    public SongAdapter songAdapter;
-    public ArrayList<Song> arrayOfSongs;
-    public ListView listView;
+    private SongAdapter songAdapter;
+    private ArrayList<Song> arrayOfSongs;
+    private ListView listView;
 
     public SongActivityFragment() {
     }
@@ -75,21 +76,38 @@ public class SongActivityFragment extends Fragment {
         listView.setAdapter(songAdapter);
 
 
-        //Check if there is data saved on onSaveInstanceState and set it as a Boolean
+        //Check if there is data saved on onSaveInstanceState to a Boolean
         Boolean dataSaved = savedInstanceState !=null;
 
         if (!dataSaved) {
 
-            // Create an instance of the async task and execute it
+            // if there isn't data saved, create an instance of the async task and execute it to get it
             SongAsyncTask fetch = new SongAsyncTask();
             fetch.execute(idBand);
 
         } else {
-            // get the data saved
+            // if there is data saved, get it
             arrayOfSongs = savedInstanceState.getParcelableArrayList("savedSongs");
             songAdapter = new SongAdapter(getActivity(), arrayOfSongs);
             listView.setAdapter(songAdapter);
         }
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // put the list of songs and the position clicked in a Bundle
+                Bundle extra = new Bundle();
+                extra.putParcelableArrayList("songs", arrayOfSongs);
+                extra.putInt("position",position);
+
+                //Create an intent to open the PlayerActivity, passing the data with the Bundle
+                Intent intent = new Intent(getActivity(), PlayerActivity.class);
+                intent.putExtras(extra);
+
+                startActivity(intent);
+
+            }
+        });
 
         return rootView;
     }
@@ -143,7 +161,6 @@ public class SongActivityFragment extends Fragment {
                     if (track.album.images.isEmpty()) {
                         songAdapter.add(new Song(track.album.name, track.name, "http://png-4.findicons.com/files/icons/1676/primo/128/music.png", "http://png-4.findicons.com/files/icons/1676/primo/128/music.png", track.preview_url));
                     } else {
-
 
                         String imageLarge = "http://png-4.findicons.com/files/icons/1676/primo/128/music.png";
                         String imageSmall = "http://png-4.findicons.com/files/icons/1676/primo/128/music.png";

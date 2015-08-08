@@ -1,22 +1,111 @@
 package com.example.android.spotifystreamer;
 
-import android.support.v4.app.Fragment;
+import android.content.Intent;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class PlayerActivityFragment extends Fragment {
 
+    private ArrayList<Song> songs;
+    private int position;
+
+    private Button playMusic;
+    private MediaPlayer mediaPlayer;
+
     public PlayerActivityFragment() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Intent intent = getActivity().getIntent();
+        Bundle extras = intent.getExtras();
+
+        songs = extras.getParcelableArrayList("songs");
+        position = extras.getInt("position");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_player, container, false);
+        View rootView =  inflater.inflate(R.layout.fragment_player, container, false);
+
+        ImageView songImage = (ImageView)rootView.findViewById(R.id.songImage);
+        Picasso.with(getActivity()).load(songs.get(position).photoLarge).into(songImage);
+
+        TextView bandText = (TextView)rootView.findViewById(R.id.bandText);
+        //TODO: get the band name
+
+        TextView songText = (TextView)rootView.findViewById(R.id.songText);
+        songText.setText(songs.get(position).name);
+
+        TextView albumText = (TextView)rootView.findViewById(R.id.albumText);
+        albumText.setText(songs.get(position).albumName);
+
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(songs.get(position).previewUrl));
+
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                int duration = mp.getDuration()/1000;
+                Toast.makeText(getActivity(), "Duration " + duration + " seconds", Toast.LENGTH_LONG).show();
+                playMusic.setBackgroundResource(android.R.drawable.ic_media_play);
+            }
+        });
+
+        playMusic = (Button) rootView.findViewById(R.id.playButton);
+        playMusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mediaPlayer.isPlaying()) {
+                    pauseMusic();
+                } else {
+                    startMusic();
+                }
+            }
+        });
+        return rootView;
+    }
+
+    public void pauseMusic(){
+        if(mediaPlayer != null){
+            mediaPlayer.pause();
+            playMusic.setBackgroundResource(android.R.drawable.ic_media_play);
+        }
+    }
+
+    public void startMusic(){
+        if(mediaPlayer != null){
+            mediaPlayer.start();
+            playMusic.setBackgroundResource(android.R.drawable.ic_media_pause);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()){
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+        super.onDestroy();
     }
 }

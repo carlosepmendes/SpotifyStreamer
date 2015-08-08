@@ -103,7 +103,7 @@ public class BandFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Band band = bandAdapter.getItem(position);
                 Intent intent = new Intent(getActivity(), SongActivity.class)
-                        .putExtra(Intent.EXTRA_TEXT, band.id);
+                        .putExtra(Intent.EXTRA_TEXT, band.getId());
                 startActivity(intent);
 
             }
