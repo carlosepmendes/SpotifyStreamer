@@ -35,10 +35,10 @@ public class SongAdapter extends ArrayAdapter<Song> {
 
 
         // Populate the data into the template views using the data object
-        songName.setText(song.name);
-        albumName.setText(song.albumName);
+        songName.setText(song.getName());
+        albumName.setText(song.getAlbumName());
         //Populate the imageView
-        Picasso.with(getContext()).load(song.photoSmall).into(songPhoto);
+        Picasso.with(getContext()).load(song.getPhotoSmall()).into(songPhoto);
 
         // Return the completed view to render on screen
         return convertView;

@@ -48,19 +48,19 @@ public class PlayerActivityFragment extends Fragment {
         View rootView =  inflater.inflate(R.layout.fragment_player, container, false);
 
         ImageView songImage = (ImageView)rootView.findViewById(R.id.songImage);
-        Picasso.with(getActivity()).load(songs.get(position).photoLarge).into(songImage);
+        Picasso.with(getActivity()).load(songs.get(position).getPhotoLarge()).into(songImage);
 
         TextView bandText = (TextView)rootView.findViewById(R.id.bandText);
         //TODO: get the band name
 
         TextView songText = (TextView)rootView.findViewById(R.id.songText);
-        songText.setText(songs.get(position).name);
+        songText.setText(songs.get(position).getName());
 
         TextView albumText = (TextView)rootView.findViewById(R.id.albumText);
-        albumText.setText(songs.get(position).albumName);
+        albumText.setText(songs.get(position).getAlbumName());
 
         mediaPlayer = new MediaPlayer();
-        mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(songs.get(position).previewUrl));
+        mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(songs.get(position).getPreviewUrl()));
 
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
             @Override
