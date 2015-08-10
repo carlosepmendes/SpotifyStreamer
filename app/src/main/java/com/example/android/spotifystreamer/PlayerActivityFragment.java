@@ -26,6 +26,13 @@ public class PlayerActivityFragment extends Fragment {
     private int position;
 
     private Button playMusic;
+    private Button previousMusic;
+    private Button nextMusic;
+    private TextView bandText;
+    private TextView songText;
+    private TextView albumText;
+    private ImageView songImage;
+
     private MediaPlayer mediaPlayer;
 
     public PlayerActivityFragment() {
@@ -47,25 +54,25 @@ public class PlayerActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_player, container, false);
 
-        ImageView songImage = (ImageView)rootView.findViewById(R.id.songImage);
+        songImage = (ImageView)rootView.findViewById(R.id.songImage);
         Picasso.with(getActivity()).load(songs.get(position).getPhotoLarge()).into(songImage);
 
-        TextView bandText = (TextView)rootView.findViewById(R.id.bandText);
+        bandText = (TextView)rootView.findViewById(R.id.bandText);
         //TODO: get the band name
 
-        TextView songText = (TextView)rootView.findViewById(R.id.songText);
+        songText = (TextView)rootView.findViewById(R.id.songText);
         songText.setText(songs.get(position).getName());
 
-        TextView albumText = (TextView)rootView.findViewById(R.id.albumText);
+        albumText = (TextView)rootView.findViewById(R.id.albumText);
         albumText.setText(songs.get(position).getAlbumName());
 
         mediaPlayer = new MediaPlayer();
         mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(songs.get(position).getPreviewUrl()));
 
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                int duration = mp.getDuration()/1000;
+                int duration = mp.getDuration() / 1000;
                 Toast.makeText(getActivity(), "Duration " + duration + " seconds", Toast.LENGTH_LONG).show();
                 playMusic.setBackgroundResource(android.R.drawable.ic_media_play);
             }
@@ -80,6 +87,54 @@ public class PlayerActivityFragment extends Fragment {
                 } else {
                     startMusic();
                 }
+            }
+        });
+
+        previousMusic = (Button) rootView.findViewById(R.id.prevButton);
+        previousMusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (position>=1){
+
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.stop();
+                    }
+
+                    position = position - 1;
+                    getMusic();
+
+                }else{
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.stop();
+                    }
+                    position = songs.size()-1;
+                    getMusic();
+                }
+            }
+        });
+
+        nextMusic = (Button) rootView.findViewById(R.id.nextButton);
+        nextMusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (position<(songs.size()-1)){
+
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.stop();
+                    }
+
+                    position = position + 1;
+                    getMusic();
+
+                }else{
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.stop();
+                    }
+                    position = 0;
+                    getMusic();
+                }
+
             }
         });
         return rootView;
@@ -107,5 +162,13 @@ public class PlayerActivityFragment extends Fragment {
             mediaPlayer = null;
         }
         super.onDestroy();
+    }
+
+    public void getMusic(){
+        mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(songs.get(position).getPreviewUrl()));
+        startMusic();
+        songText.setText(songs.get(position).getName());
+        albumText.setText(songs.get(position).getAlbumName());
+        Picasso.with(getActivity()).load(songs.get(position).getPhotoLarge()).into(songImage);
     }
 }
