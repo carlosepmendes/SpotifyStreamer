@@ -39,6 +39,18 @@ public class BandFragment extends Fragment {
     public BandFragment() {
     }
 
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(Bundle extra);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -102,9 +114,13 @@ public class BandFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Band band = bandAdapter.getItem(position);
-                Intent intent = new Intent(getActivity(), SongActivity.class)
-                        .putExtra(Intent.EXTRA_TEXT, band.getId());
-                startActivity(intent);
+
+                Bundle extras = new Bundle();
+                extras.putString("id",band.getId());
+                extras.putString("band",band.getName());
+
+                ((Callback)getActivity())
+                        .onItemSelected(extras);
 
             }
 

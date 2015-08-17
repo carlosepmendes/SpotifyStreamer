@@ -12,10 +12,27 @@ import android.view.MenuItem;
 
 public class SongActivity extends ActionBarActivity {
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_song);
+
+        if (savedInstanceState == null){
+
+            Bundle extras = new Bundle();
+            extras.putString(SongActivityFragment.ID, getIntent().getStringExtra("id"));
+            extras.putString(SongActivityFragment.BAND, getIntent().getStringExtra("band"));
+
+            SongActivityFragment fragment = new SongActivityFragment();
+            fragment.setArguments(extras);
+
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.song_container, fragment)
+                    .commit();
+        }
+
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)

@@ -33,6 +33,11 @@ public class SongActivityFragment extends Fragment {
     private SongAdapter songAdapter;
     private ArrayList<Song> arrayOfSongs;
     private ListView listView;
+    private String mIdBand;
+    private String mNomeBand;
+
+    public static final String ID = "id";
+    public static final String BAND = "band";
 
     public SongActivityFragment() {
     }
@@ -53,12 +58,14 @@ public class SongActivityFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_song, container, false);
 
-        Intent intent = getActivity().getIntent();
-        String idBand = null;
+        Bundle bundle = getArguments();
+        //bundle.
+
 
         //check if there is an intent with data form the Band Activity and get that data to idBand
-        if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-            idBand = intent.getStringExtra(Intent.EXTRA_TEXT);
+        if (bundle != null) {// && bundle.isEmpty()hasExtra(Intent.EXTRA_TEXT)
+            mIdBand = bundle.getString(ID);
+            mNomeBand = bundle.getString(BAND);
         } else {
             Context context = getActivity();
             CharSequence text = "Sorry, we have no tracks for this artist!";
@@ -83,7 +90,7 @@ public class SongActivityFragment extends Fragment {
 
             // if there isn't data saved, create an instance of the async task and execute it to get it
             SongAsyncTask fetch = new SongAsyncTask();
-            fetch.execute(idBand);
+            fetch.execute(mIdBand);
 
         } else {
             // if there is data saved, get it
