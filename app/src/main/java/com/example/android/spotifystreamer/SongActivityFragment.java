@@ -62,59 +62,62 @@ public class SongActivityFragment extends Fragment {
         //bundle.
 
 
+        Log.d("AAAAAAAAAAAA","Q");
         //check if there is an intent with data form the Band Activity and get that data to idBand
         if (bundle != null) {// && bundle.isEmpty()hasExtra(Intent.EXTRA_TEXT)
             mIdBand = bundle.getString(ID);
             mNomeBand = bundle.getString(BAND);
+
+            Log.d("AAAAAAAAAAAA","M");
+            // bind the view with the adapter
+            arrayOfSongs = new ArrayList<>();
+            listView = (ListView) rootView.findViewById(R.id.song_listView);
+
+            songAdapter = new SongAdapter(getActivity(), arrayOfSongs);
+            listView.setAdapter(songAdapter);
+
+
+            //Check if there is data saved on onSaveInstanceState to a Boolean
+            Boolean dataSaved = savedInstanceState !=null;
+
+            if (!dataSaved) {
+
+                // if there isn't data saved, create an instance of the async task and execute it to get it
+                SongAsyncTask fetch = new SongAsyncTask();
+                fetch.execute(mIdBand);
+
+            } else {
+                // if there is data saved, get it
+                arrayOfSongs = savedInstanceState.getParcelableArrayList("savedSongs");
+                songAdapter = new SongAdapter(getActivity(), arrayOfSongs);
+                listView.setAdapter(songAdapter);
+            }
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    // put the list of songs and the position clicked in a Bundle
+                    Bundle extra = new Bundle();
+                    extra.putParcelableArrayList("songs", arrayOfSongs);
+                    extra.putInt("position", position);
+
+                    //Create an intent to open the PlayerActivity, passing the data with the Bundle
+                    Intent intent = new Intent(getActivity(), PlayerActivity.class);
+                    intent.putExtras(extra);
+
+                    startActivity(intent);
+
+                }
+            });
         } else {
             Context context = getActivity();
+            Log.d("AAAAAAAAAAAA","AQ");
             CharSequence text = "Sorry, we have no tracks for this artist!";
             int duration = Toast.LENGTH_SHORT;
 
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
         }
-
-        // bind the view with the adapter
-        arrayOfSongs = new ArrayList<>();
-        listView = (ListView) rootView.findViewById(R.id.song_listView);
-
-        songAdapter = new SongAdapter(getActivity(), arrayOfSongs);
-        listView.setAdapter(songAdapter);
-
-
-        //Check if there is data saved on onSaveInstanceState to a Boolean
-        Boolean dataSaved = savedInstanceState !=null;
-
-        if (!dataSaved) {
-
-            // if there isn't data saved, create an instance of the async task and execute it to get it
-            SongAsyncTask fetch = new SongAsyncTask();
-            fetch.execute(mIdBand);
-
-        } else {
-            // if there is data saved, get it
-            arrayOfSongs = savedInstanceState.getParcelableArrayList("savedSongs");
-            songAdapter = new SongAdapter(getActivity(), arrayOfSongs);
-            listView.setAdapter(songAdapter);
-        }
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // put the list of songs and the position clicked in a Bundle
-                Bundle extra = new Bundle();
-                extra.putParcelableArrayList("songs", arrayOfSongs);
-                extra.putInt("position",position);
-
-                //Create an intent to open the PlayerActivity, passing the data with the Bundle
-                Intent intent = new Intent(getActivity(), PlayerActivity.class);
-                intent.putExtras(extra);
-
-                startActivity(intent);
-
-            }
-        });
 
         return rootView;
     }

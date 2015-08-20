@@ -15,8 +15,8 @@ This layout is a two-pane layout for the Items master/detail flow.
 
 <fragment
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_main"
-    android:name="com.example.android.spotifystreamer.SongActivityFragment"
+    android:id="@+id/fragment"
+    android:name="com.example.android.spotifystreamer.BandFragment"
     tools:layout="@layout/fragment_band"
     android:layout_width="0dp"
     android:layout_height="match_parent"

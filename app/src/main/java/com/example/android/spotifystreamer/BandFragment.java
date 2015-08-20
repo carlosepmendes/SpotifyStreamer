@@ -132,9 +132,10 @@ public class BandFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        Log.d("AAAAAAAAAAAA", "E");
         // get saved datasource if present
         if (savedInstanceState != null) {
+            Log.d("AAAAAAAAAAAA","F");
             arrayOfBands = savedInstanceState.getParcelableArrayList("savedBandsList");
             bandAdapter = new BandAdapter(getActivity(),arrayOfBands);
             listView.setAdapter(bandAdapter);
