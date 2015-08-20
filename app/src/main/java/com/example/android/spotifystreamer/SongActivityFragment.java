@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,7 +64,7 @@ public class SongActivityFragment extends Fragment {
         //bundle.
 
 
-        Log.d("AAAAAAAAAAAA","Q");
+        Log.d("AAAAAAAAAAAA", "Q");
         //check if there is an intent with data form the Band Activity and get that data to idBand
         if (bundle != null) {// && bundle.isEmpty()hasExtra(Intent.EXTRA_TEXT)
             mIdBand = bundle.getString(ID);
@@ -102,16 +104,26 @@ public class SongActivityFragment extends Fragment {
                     extra.putInt("position", position);
 
                     //Create an intent to open the PlayerActivity, passing the data with the Bundle
-                    Intent intent = new Intent(getActivity(), PlayerActivity.class);
-                    intent.putExtras(extra);
+                    //Intent intent = new Intent(getActivity(), PlayerActivity.class);
+                    //intent.putExtras(extra);
 
-                    startActivity(intent);
+                    //startActivity(intent);
+
+
+                        // Create the fragment and show it as a dialog.
+                    FragmentManager fm = getFragmentManager();
+                    PlayerActivityFragment dialogFragment = new PlayerActivityFragment ();
+                    dialogFragment.setArguments(extra   );
+                    dialogFragment.show(fm, "Sample Fragment");
+
+
+
+
 
                 }
             });
         } else {
             Context context = getActivity();
-            Log.d("AAAAAAAAAAAA","AQ");
             CharSequence text = "Sorry, we have no tracks for this artist!";
             int duration = Toast.LENGTH_SHORT;
 

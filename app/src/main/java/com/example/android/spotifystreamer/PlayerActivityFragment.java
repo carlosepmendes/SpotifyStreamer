@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class PlayerActivityFragment extends Fragment {
+public class PlayerActivityFragment extends DialogFragment {
 
     private ArrayList<Song> songs;
     private int position;
@@ -42,8 +43,8 @@ public class PlayerActivityFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = getActivity().getIntent();
-        Bundle extras = intent.getExtras();
+        //Intent intent = getActivity().getIntent();
+        Bundle extras = getArguments();
 
         songs = extras.getParcelableArrayList("songs");
         position = extras.getInt("position");
