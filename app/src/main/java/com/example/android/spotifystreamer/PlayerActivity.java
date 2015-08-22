@@ -3,8 +3,8 @@ package com.example.android.spotifystreamer;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -14,6 +14,22 @@ public class PlayerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
+
+        if (savedInstanceState == null){
+
+            Bundle extras = new Bundle();
+            extras.putParcelableArrayList("songs", getIntent().getParcelableArrayListExtra("songs"));
+            extras.putInt("position", getIntent().getIntExtra("position", 1));
+            extras.putString("bandName", getIntent().getStringExtra("bandName"));
+
+            PlayerActivityFragment fragment = new PlayerActivityFragment().newInstance();
+            fragment.setArguments(extras);
+
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.player_container, fragment)
+                    .commit();
+        }
+
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)

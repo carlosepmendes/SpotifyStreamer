@@ -1,11 +1,9 @@
 package com.example.android.spotifystreamer;
 
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +23,7 @@ public class PlayerActivityFragment extends DialogFragment {
 
     private ArrayList<Song> songs;
     private int position;
+    private String bandName;
 
     private Button playMusic;
     private Button previousMusic;
@@ -39,15 +38,19 @@ public class PlayerActivityFragment extends DialogFragment {
     public PlayerActivityFragment() {
     }
 
+    static PlayerActivityFragment newInstance() {
+        return new PlayerActivityFragment();
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Intent intent = getActivity().getIntent();
         Bundle extras = getArguments();
 
         songs = extras.getParcelableArrayList("songs");
         position = extras.getInt("position");
+        bandName = extras.getString("bandName");
     }
 
     @Override
@@ -59,7 +62,7 @@ public class PlayerActivityFragment extends DialogFragment {
         Picasso.with(getActivity()).load(songs.get(position).getPhotoLarge()).into(songImage);
 
         bandText = (TextView)rootView.findViewById(R.id.bandText);
-        //TODO: get the band name
+        bandText.setText(bandName);
 
         songText = (TextView)rootView.findViewById(R.id.songText);
         songText.setText(songs.get(position).getName());
@@ -69,6 +72,7 @@ public class PlayerActivityFragment extends DialogFragment {
 
         mediaPlayer = new MediaPlayer();
         mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(songs.get(position).getPreviewUrl()));
+        mediaPlayer.start();
 
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override

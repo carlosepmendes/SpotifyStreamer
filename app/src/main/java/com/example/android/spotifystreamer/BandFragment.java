@@ -1,7 +1,6 @@
 package com.example.android.spotifystreamer;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -132,10 +131,9 @@ public class BandFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.d("AAAAAAAAAAAA", "E");
+
         // get saved datasource if present
         if (savedInstanceState != null) {
-            Log.d("AAAAAAAAAAAA","F");
             arrayOfBands = savedInstanceState.getParcelableArrayList("savedBandsList");
             bandAdapter = new BandAdapter(getActivity(),arrayOfBands);
             listView.setAdapter(bandAdapter);

@@ -1,10 +1,8 @@
 package com.example.android.spotifystreamer;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -64,13 +62,11 @@ public class BandActivity extends ActionBarActivity implements BandFragment.Call
 
     @Override
     public void onItemSelected(Bundle extra) {
+        int myInt = (mTwoPane) ? 1 : 0;
+        extra.putInt("TwoPane",myInt);
 
         if (mTwoPane)
         {
-            //Bundle extras = new Bundle();
-            //extras.putString(SongActivityFragment.ID, getIntent().getStringExtra("id"));
-            //extras.putString(SongActivityFragment.BAND, getIntent().getStringExtra("band"));
-
             SongActivityFragment fragment = new SongActivityFragment();
             fragment.setArguments(extra);
 

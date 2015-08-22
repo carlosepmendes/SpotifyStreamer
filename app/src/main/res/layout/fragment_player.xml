@@ -75,7 +75,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_margin="10dp"
-                android:background="@android:drawable/ic_media_play" />
+                android:background="@android:drawable/ic_media_pause" />
 
             <Button
                 android:id="@+id/nextButton"

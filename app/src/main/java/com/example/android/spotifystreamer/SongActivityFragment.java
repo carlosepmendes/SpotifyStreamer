@@ -1,10 +1,8 @@
 package com.example.android.spotifystreamer;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -13,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -36,7 +33,8 @@ public class SongActivityFragment extends Fragment {
     private ArrayList<Song> arrayOfSongs;
     private ListView listView;
     private String mIdBand;
-    private String mNomeBand;
+    private String bandName;
+    private int twoPane;
 
     public static final String ID = "id";
     public static final String BAND = "band";
@@ -61,23 +59,19 @@ public class SongActivityFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_song, container, false);
 
         Bundle bundle = getArguments();
-        //bundle.
 
-
-        Log.d("AAAAAAAAAAAA", "Q");
-        //check if there is an intent with data form the Band Activity and get that data to idBand
-        if (bundle != null) {// && bundle.isEmpty()hasExtra(Intent.EXTRA_TEXT)
+        //check if there is an intent with data and get that data
+        if (bundle != null) {
             mIdBand = bundle.getString(ID);
-            mNomeBand = bundle.getString(BAND);
+            bandName = bundle.getString(BAND);
+            twoPane = bundle.getInt("TwoPane");
 
-            Log.d("AAAAAAAAAAAA","M");
             // bind the view with the adapter
             arrayOfSongs = new ArrayList<>();
             listView = (ListView) rootView.findViewById(R.id.song_listView);
 
             songAdapter = new SongAdapter(getActivity(), arrayOfSongs);
             listView.setAdapter(songAdapter);
-
 
             //Check if there is data saved on onSaveInstanceState to a Boolean
             Boolean dataSaved = savedInstanceState !=null;
@@ -102,35 +96,26 @@ public class SongActivityFragment extends Fragment {
                     Bundle extra = new Bundle();
                     extra.putParcelableArrayList("songs", arrayOfSongs);
                     extra.putInt("position", position);
+                    extra.putString("bandName", bandName);
 
-                    //Create an intent to open the PlayerActivity, passing the data with the Bundle
-                    //Intent intent = new Intent(getActivity(), PlayerActivity.class);
-                    //intent.putExtras(extra);
-
-                    //startActivity(intent);
-
-
+                    if(twoPane==1) {
                         // Create the fragment and show it as a dialog.
-                    FragmentManager fm = getFragmentManager();
-                    PlayerActivityFragment dialogFragment = new PlayerActivityFragment ();
-                    dialogFragment.setArguments(extra   );
-                    dialogFragment.show(fm, "Sample Fragment");
+                        FragmentManager fm = getFragmentManager();
+                        PlayerActivityFragment dialogFragment = new PlayerActivityFragment();
+                        dialogFragment.setArguments(extra);
+                        dialogFragment.show(fm, "Sample Fragment");
 
+                    }else {
+                        //Create an intent to open the PlayerActivity, passing the data with the Bundle
+                        Intent intent = new Intent(getActivity(), PlayerActivity.class);
+                        intent.putExtras(extra);
 
-
-
+                        startActivity(intent);
+                    }
 
                 }
             });
-        } else {
-            Context context = getActivity();
-            CharSequence text = "Sorry, we have no tracks for this artist!";
-            int duration = Toast.LENGTH_SHORT;
-
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
         }
-
         return rootView;
     }
 

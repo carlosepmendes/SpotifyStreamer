@@ -3,9 +3,8 @@ package com.example.android.spotifystreamer;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -24,6 +23,7 @@ public class SongActivity extends ActionBarActivity {
             Bundle extras = new Bundle();
             extras.putString(SongActivityFragment.ID, getIntent().getStringExtra("id"));
             extras.putString(SongActivityFragment.BAND, getIntent().getStringExtra("band"));
+            extras.putInt("TwoPane",getIntent().getIntExtra("TwoPane",1));
 
             SongActivityFragment fragment = new SongActivityFragment();
             fragment.setArguments(extras);
