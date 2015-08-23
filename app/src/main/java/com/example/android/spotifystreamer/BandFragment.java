@@ -51,6 +51,15 @@ public class BandFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        arrayOfBands = new ArrayList<>();
+
+        bandAdapter = new BandAdapter(getActivity(),arrayOfBands);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -98,11 +107,6 @@ public class BandFragment extends Fragment {
 
             }
         });*/
-
-
-        arrayOfBands = new ArrayList<>();
-
-        bandAdapter = new BandAdapter(getActivity(),arrayOfBands);
 
         //Get the listview and set the adapter on it
         listView = (ListView) rootView.findViewById(R.id.band_listView);

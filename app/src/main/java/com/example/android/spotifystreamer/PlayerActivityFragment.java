@@ -32,7 +32,6 @@ public class PlayerActivityFragment extends DialogFragment {
     private TextView albumText;
     private ImageView songImage;
     private TextView timePassedTextView;
-    private TextView durationTextView;
 
     private MediaPlayer mediaPlayer;
     private SeekBar seekBar;
@@ -40,6 +39,7 @@ public class PlayerActivityFragment extends DialogFragment {
     private double finalTime = 0;
     private Handler durationHandler = new Handler();
 
+    //This Runnable will keep updating to show the correct position of the seekbar
     private Runnable updateSeekBarTime = new Runnable() {
         @Override
         public void run() {
@@ -67,6 +67,7 @@ public class PlayerActivityFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //get our data
         Bundle extras = getArguments();
 
         songs = extras.getParcelableArrayList("songs");
@@ -79,26 +80,24 @@ public class PlayerActivityFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_player, container, false);
 
+        //get views
         seekBar = (SeekBar) rootView.findViewById(R.id.seekBarPlayer);
         playMusic = (Button) rootView.findViewById(R.id.playButton);
         Button previousMusic = (Button) rootView.findViewById(R.id.prevButton);
+        Button nextMusic = (Button) rootView.findViewById(R.id.nextButton);
         timePassedTextView = (TextView) rootView.findViewById(R.id.timePassedTextView);
-        durationTextView = (TextView)rootView.findViewById(R.id.durationTextView);
-
+        TextView durationTextView = (TextView) rootView.findViewById(R.id.durationTextView);
+        TextView bandText = (TextView) rootView.findViewById(R.id.bandText);
         songImage = (ImageView) rootView.findViewById(R.id.songImage);
+        songText = (TextView) rootView.findViewById(R.id.songText);
+        albumText = (TextView) rootView.findViewById(R.id.albumText);
+
+        bandText.setText(bandName);
+        songText.setText(songs.get(position).getName());
+        albumText.setText(songs.get(position).getAlbumName());
         Picasso.with(getActivity()).load(songs.get(position).getPhotoLarge()).into(songImage);
 
-        TextView bandText = (TextView) rootView.findViewById(R.id.bandText);
-        bandText.setText(bandName);
-
-        durationTextView = (TextView)rootView.findViewById(R.id.durationTextView);
         durationTextView.setText(String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes((long) finalTime), TimeUnit.MILLISECONDS.toSeconds((long) finalTime)));
-
-        songText = (TextView) rootView.findViewById(R.id.songText);
-        songText.setText(songs.get(position).getName());
-
-        albumText = (TextView) rootView.findViewById(R.id.albumText);
-        albumText.setText(songs.get(position).getAlbumName());
 
         mediaPlayer = new MediaPlayer();
         mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(songs.get(position).getPreviewUrl()));
@@ -164,7 +163,6 @@ public class PlayerActivityFragment extends DialogFragment {
             }
         });
 
-        Button nextMusic = (Button) rootView.findViewById(R.id.nextButton);
         nextMusic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -205,6 +203,7 @@ public class PlayerActivityFragment extends DialogFragment {
         }
     }
 
+    //closes media player and stop the callbacks from our handler
     @Override
     public void onDestroy() {
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
