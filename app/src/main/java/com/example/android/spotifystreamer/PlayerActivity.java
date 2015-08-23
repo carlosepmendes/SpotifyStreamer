@@ -29,7 +29,6 @@ public class PlayerActivity extends AppCompatActivity {
                     .add(R.id.player_container, fragment)
                     .commit();
         }
-
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -59,4 +58,5 @@ public class PlayerActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }

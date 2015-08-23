@@ -47,7 +47,7 @@ public class BandFragment extends Fragment {
         /**
          * DetailFragmentCallback for when an item has been selected.
          */
-        public void onItemSelected(Bundle extra);
+        void onItemSelected(Bundle extra);
     }
 
     @Override

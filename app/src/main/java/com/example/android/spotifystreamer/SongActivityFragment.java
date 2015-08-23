@@ -31,8 +31,6 @@ public class SongActivityFragment extends Fragment {
 
     private SongAdapter songAdapter;
     private ArrayList<Song> arrayOfSongs;
-    private ListView listView;
-    private String mIdBand;
     private String bandName;
     private int twoPane;
 
@@ -62,13 +60,13 @@ public class SongActivityFragment extends Fragment {
 
         //check if there is an intent with data and get that data
         if (bundle != null) {
-            mIdBand = bundle.getString(ID);
+            String mIdBand = bundle.getString(ID);
             bandName = bundle.getString(BAND);
             twoPane = bundle.getInt("TwoPane");
 
             // bind the view with the adapter
             arrayOfSongs = new ArrayList<>();
-            listView = (ListView) rootView.findViewById(R.id.song_listView);
+            ListView listView = (ListView) rootView.findViewById(R.id.song_listView);
 
             songAdapter = new SongAdapter(getActivity(), arrayOfSongs);
             listView.setAdapter(songAdapter);
@@ -98,21 +96,20 @@ public class SongActivityFragment extends Fragment {
                     extra.putInt("position", position);
                     extra.putString("bandName", bandName);
 
-                    if(twoPane==1) {
+                    if (twoPane == 1) {
                         // Create the fragment and show it as a dialog.
                         FragmentManager fm = getFragmentManager();
                         PlayerActivityFragment dialogFragment = new PlayerActivityFragment();
                         dialogFragment.setArguments(extra);
                         dialogFragment.show(fm, "Sample Fragment");
 
-                    }else {
+                    } else {
                         //Create an intent to open the PlayerActivity, passing the data with the Bundle
                         Intent intent = new Intent(getActivity(), PlayerActivity.class);
                         intent.putExtras(extra);
 
                         startActivity(intent);
                     }
-
                 }
             });
         }
@@ -182,7 +179,6 @@ public class SongActivityFragment extends Fragment {
                                 imageSmall = img.url;
                             }
                         }
-
                         songAdapter.add(new Song(track.album.name, track.name, imageSmall, imageLarge,track.preview_url));
                     }
                 }
