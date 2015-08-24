@@ -1,6 +1,9 @@
 package com.example.android.spotifystreamer;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -75,11 +79,19 @@ public class SongActivityFragment extends Fragment {
             Boolean dataSaved = savedInstanceState !=null;
 
             if (!dataSaved) {
+                //check if there is an Internet Connection
+                if(isNetworkAvailable()) {
+                    // if there isn't data saved, create an instance of the async task and execute it to get it
+                    SongAsyncTask fetch = new SongAsyncTask();
+                    fetch.execute(mIdBand);
+                }else{
+                    Context context = getActivity();
+                    CharSequence text = "Sorry couldn't access the internet, please check your connection!";
+                    int duration = Toast.LENGTH_SHORT;
 
-                // if there isn't data saved, create an instance of the async task and execute it to get it
-                SongAsyncTask fetch = new SongAsyncTask();
-                fetch.execute(mIdBand);
-
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                }
             } else {
                 // if there is data saved, get it
                 arrayOfSongs = savedInstanceState.getParcelableArrayList("savedSongs");
@@ -114,6 +126,15 @@ public class SongActivityFragment extends Fragment {
             });
         }
         return rootView;
+    }
+
+    //Based on a stackoverflow snippet, check if there is Internet Connection
+    //also added permissions for it in the manifest file
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     /**
@@ -157,7 +178,7 @@ public class SongActivityFragment extends Fragment {
         protected void onPostExecute(List trackstList) {
             super.onPostExecute(trackstList);
 
-            if (!trackstList.isEmpty()) {
+            if ((trackstList != null)&& !trackstList.isEmpty()) {
                 songAdapter.clear();
                 for (int i = 0; i < trackstList.size(); i++) {
                     Track track = (Track) trackstList.get(i);//new Artist();
@@ -182,6 +203,14 @@ public class SongActivityFragment extends Fragment {
                         songAdapter.add(new Song(track.album.name, track.name, imageSmall, imageLarge,track.preview_url));
                     }
                 }
+            }else{
+
+                Context context = getActivity();
+                CharSequence text = "Sorry, no tracks found for this artist!";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
             }
         }
     }

@@ -1,6 +1,8 @@
 package com.example.android.spotifystreamer;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -74,9 +76,19 @@ public class BandFragment extends Fragment {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
                     if(v.getText().length() != 0) {
-                        BandAsyncTask fetch = new BandAsyncTask();
-                        String query= v.getText().toString();
-                        fetch.execute(query);
+                        if(isNetworkAvailable()) {
+                            BandAsyncTask fetch = new BandAsyncTask();
+                            String query= v.getText().toString();
+                            fetch.execute(query);
+                        }else{
+                            Context context = getActivity();
+                            CharSequence text = "Sorry couldn't access the internet, please check your connection!";
+                            int duration = Toast.LENGTH_SHORT;
+
+                            Toast toast = Toast.makeText(context, text, duration);
+                            toast.show();
+                        }
+
                     }
                     handled = true;
                 }
@@ -124,7 +136,6 @@ public class BandFragment extends Fragment {
 
                 ((Callback)getActivity())
                         .onItemSelected(extras);
-
             }
 
         });
@@ -154,6 +165,15 @@ public class BandFragment extends Fragment {
             outState.putParcelableArrayList("savedBandsList", arrayOfBands);
         }
 
+    }
+
+    //Based on a stackoverflow snippet, check if there is Internet Connection
+    //also added permissions for it in the manifest file
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     /**
@@ -197,9 +217,7 @@ public class BandFragment extends Fragment {
 
             bandAdapter.clear();
 
-            if (!artistResult.isEmpty()) {
-
-
+            if ((artistResult != null)&& !artistResult.isEmpty()  ) {
 
                 for (int i = 0; i < artistResult.size(); i++) {
                     Artist artist = (Artist) artistResult.get(i);//new Artist();

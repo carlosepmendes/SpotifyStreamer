@@ -1,6 +1,9 @@
 package com.example.android.spotifystreamer;
 
+import android.content.Context;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -27,6 +31,8 @@ public class PlayerActivityFragment extends DialogFragment {
     private int position;
     private String bandName;
 
+    private TextView durationTextView;
+    private TextView bandText;
     private Button playMusic;
     private TextView songText;
     private TextView albumText;
@@ -67,12 +73,24 @@ public class PlayerActivityFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //get our data
-        Bundle extras = getArguments();
+        //Check if there is data saved on onSaveInstanceState to a Boolean
+        Boolean dataSaved = savedInstanceState !=null;
 
-        songs = extras.getParcelableArrayList("songs");
-        position = extras.getInt("position");
-        bandName = extras.getString("bandName");
+        if (dataSaved) {
+            songs = savedInstanceState.getParcelableArrayList("songs");
+            position = savedInstanceState.getInt("position");
+            bandName = savedInstanceState.getString("bandName");
+            timeElapsed = savedInstanceState.getDouble("songPosition");
+
+        }else{
+            //get our data
+            Bundle extras = getArguments();
+
+            songs = extras.getParcelableArrayList("songs");
+            position = extras.getInt("position");
+            bandName = extras.getString("bandName");
+        }
+
     }
 
     @Override
@@ -86,22 +104,21 @@ public class PlayerActivityFragment extends DialogFragment {
         Button previousMusic = (Button) rootView.findViewById(R.id.prevButton);
         Button nextMusic = (Button) rootView.findViewById(R.id.nextButton);
         timePassedTextView = (TextView) rootView.findViewById(R.id.timePassedTextView);
-        TextView durationTextView = (TextView) rootView.findViewById(R.id.durationTextView);
-        TextView bandText = (TextView) rootView.findViewById(R.id.bandText);
+        durationTextView = (TextView) rootView.findViewById(R.id.durationTextView);
+        bandText = (TextView) rootView.findViewById(R.id.bandText);
         songImage = (ImageView) rootView.findViewById(R.id.songImage);
         songText = (TextView) rootView.findViewById(R.id.songText);
         albumText = (TextView) rootView.findViewById(R.id.albumText);
 
-        bandText.setText(bandName);
-        songText.setText(songs.get(position).getName());
-        albumText.setText(songs.get(position).getAlbumName());
-        Picasso.with(getActivity()).load(songs.get(position).getPhotoLarge()).into(songImage);
-
-        durationTextView.setText(String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes((long) finalTime), TimeUnit.MILLISECONDS.toSeconds((long) finalTime)));
-
         mediaPlayer = new MediaPlayer();
-        mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(songs.get(position).getPreviewUrl()));
-        startMusic();
+        getMusic();
+
+        if (timeElapsed ==0) {
+            startMusic();
+        }else{
+            mediaPlayer.seekTo((int) timeElapsed);
+            startMusic();
+        }
 
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -193,13 +210,16 @@ public class PlayerActivityFragment extends DialogFragment {
 
     public void startMusic() {
         if (mediaPlayer != null) {
+
             mediaPlayer.start();
+
             playMusic.setBackgroundResource(android.R.drawable.ic_media_pause);
 
             timeElapsed = mediaPlayer.getCurrentPosition();
             seekBar.setProgress((int) timeElapsed);
 
             durationHandler.postDelayed(updateSeekBarTime, 100);
+
         }
     }
 
@@ -216,10 +236,51 @@ public class PlayerActivityFragment extends DialogFragment {
     }
 
     public void getMusic() {
-        mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(songs.get(position).getPreviewUrl()));
-        startMusic();
-        songText.setText(songs.get(position).getName());
-        albumText.setText(songs.get(position).getAlbumName());
-        Picasso.with(getActivity()).load(songs.get(position).getPhotoLarge()).into(songImage);
+        if(isNetworkAvailable()) {
+
+            mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(songs.get(position).getPreviewUrl()));
+            startMusic();
+
+            bandText.setText(bandName);
+            songText.setText(songs.get(position).getName());
+            albumText.setText(songs.get(position).getAlbumName());
+            Picasso.with(getActivity()).load(songs.get(position).getPhotoLarge()).into(songImage);
+
+            durationTextView.setText(String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes((long) finalTime), TimeUnit.MILLISECONDS.toSeconds((long) finalTime)));
+        }else{
+            Context context = getActivity();
+            CharSequence text = "Sorry couldn't access the internet, please check your connection!";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        }
+
+
+    }
+
+    //Based on a stackoverflow snippet, check if there is Internet Connection
+    //also added permissions for it in the manifest file
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // save data source
+        if (songs != null) {
+            outState.putParcelableArrayList("songs", songs);
+            outState.putString("bandName",bandName);
+            outState.putInt("position", position);
+
+        }
+        if (mediaPlayer != null && mediaPlayer.isPlaying()){
+            outState.putDouble("songPosition",timeElapsed);
+        }
     }
 }

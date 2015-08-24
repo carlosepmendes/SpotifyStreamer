@@ -2,8 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.spotifystreamer" >
 
-    <!-- This permission is necessary in order for Sunshine to perform network access. -->
+    <!-- This permission is necessary in order to perform network access. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- This permissions are necessary in order to check if there is network access. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
