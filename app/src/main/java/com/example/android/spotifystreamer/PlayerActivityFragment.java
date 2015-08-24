@@ -113,13 +113,6 @@ public class PlayerActivityFragment extends DialogFragment {
         mediaPlayer = new MediaPlayer();
         getMusic();
 
-        if (timeElapsed ==0) {
-            startMusic();
-        }else{
-            mediaPlayer.seekTo((int) timeElapsed);
-            startMusic();
-        }
-
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
@@ -175,7 +168,7 @@ public class PlayerActivityFragment extends DialogFragment {
                 } else {
                     position = songs.size() - 1;
                 }
-
+                timeElapsed = 0;
                 getMusic();
             }
         });
@@ -193,7 +186,7 @@ public class PlayerActivityFragment extends DialogFragment {
                 } else {
                     position = 0;
                 }
-
+                timeElapsed = 0;
                 getMusic();
             }
         });
@@ -239,6 +232,7 @@ public class PlayerActivityFragment extends DialogFragment {
         if(isNetworkAvailable()) {
 
             mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(songs.get(position).getPreviewUrl()));
+            mediaPlayer.seekTo((int) timeElapsed);
             startMusic();
 
             bandText.setText(bandName);
