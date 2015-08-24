@@ -271,9 +271,8 @@ public class PlayerActivityFragment extends DialogFragment {
             outState.putParcelableArrayList("songs", songs);
             outState.putString("bandName",bandName);
             outState.putInt("position", position);
-
         }
-        if (mediaPlayer != null && mediaPlayer.isPlaying()){
+        if (mediaPlayer != null){
             outState.putDouble("songPosition",timeElapsed);
         }
     }
