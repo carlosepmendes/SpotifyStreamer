@@ -55,7 +55,7 @@ public class BandFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         arrayOfBands = new ArrayList<>();
 
         bandAdapter = new BandAdapter(getActivity(),arrayOfBands);
